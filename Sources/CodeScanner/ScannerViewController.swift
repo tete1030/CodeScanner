@@ -16,7 +16,8 @@ extension CodeScannerView {
         
         var delegate: ScannerCoordinator?
         private let showViewfinder: Bool
-        
+        var subviewUpdater: (UIView) -> Void = {_ in }
+
         private var isGalleryShowing: Bool = false {
             didSet {
                 // Update binding
@@ -111,6 +112,8 @@ extension CodeScannerView {
                 stackView.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
                 stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
             ])
+
+            self.subviewUpdater(view)
         }
 
         override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -226,6 +229,7 @@ extension CodeScannerView {
             previewLayer.videoGravity = .resizeAspectFill
             view.layer.addSublayer(previewLayer)
             addviewfinder()
+            subviewUpdater(view)
 
             delegate?.reset()
 
