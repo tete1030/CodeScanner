@@ -114,13 +114,13 @@ public struct CodeScannerView: UIViewControllerRepresentable {
         )
     }
 
-    public func subviewUpdater(_ updater: @escaping (UIView) -> Void) -> some View {
+    public func subviewUpdater(_ updater: @escaping (UIView) -> Void) -> CodeScannerView {
         var copy = self
         copy.subviewUpdater = updater
         return copy
     }
 
-    public func subviewInitializer(_ initializer: @escaping (UIView) -> Void) -> some View {
+    public func subviewInitializer(_ initializer: @escaping (UIView) -> Void) -> CodeScannerView {
         var copy = self
         copy.subviewInitializer = initializer
         return copy
