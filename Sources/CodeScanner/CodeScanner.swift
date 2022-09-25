@@ -120,9 +120,9 @@ public struct CodeScannerView: UIViewControllerRepresentable {
         return copy
     }
 
-    public func subviewInitializer(_ updater: @escaping (UIView) -> Void) -> some View {
+    public func subviewInitializer(_ initializer: @escaping (UIView) -> Void) -> some View {
         var copy = self
-        copy.subviewInitializer = subviewInitializer
+        copy.subviewInitializer = initializer
         return copy
     }
 }
