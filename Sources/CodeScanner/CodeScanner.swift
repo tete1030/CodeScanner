@@ -63,7 +63,8 @@ public struct CodeScannerView: UIViewControllerRepresentable {
     public var isTorchOn: Bool
     public var isGalleryPresented: Binding<Bool>
     public var videoCaptureDevice: AVCaptureDevice?
-    public var subviewUpdater: (UIView) -> Void
+    public var subviewInitializer: (UIView) -> Void = { _ in }
+    public var subviewUpdater: (UIView) -> Void = { _ in }
     public var completion: (Result<ScanResult, ScanError>) -> Void
 
     public init(
@@ -76,7 +77,6 @@ public struct CodeScannerView: UIViewControllerRepresentable {
         isTorchOn: Bool = false,
         isGalleryPresented: Binding<Bool> = .constant(false),
         videoCaptureDevice: AVCaptureDevice? = AVCaptureDevice.default(for: .video),
-        subviewUpdater: @escaping (UIView) -> Void = {_ in },
         completion: @escaping (Result<ScanResult, ScanError>) -> Void
     ) {
         self.codeTypes = codeTypes
@@ -88,7 +88,6 @@ public struct CodeScannerView: UIViewControllerRepresentable {
         self.isTorchOn = isTorchOn
         self.isGalleryPresented = isGalleryPresented
         self.videoCaptureDevice = videoCaptureDevice
-        self.subviewUpdater = subviewUpdater
         self.completion = completion
     }
 
@@ -99,11 +98,13 @@ public struct CodeScannerView: UIViewControllerRepresentable {
     public func makeUIViewController(context: Context) -> ScannerViewController {
         let viewController = ScannerViewController(showViewfinder: showViewfinder)
         viewController.delegate = context.coordinator
+        viewController.subviewInitializer = self.subviewInitializer
         viewController.subviewUpdater = self.subviewUpdater
         return viewController
     }
 
     public func updateUIViewController(_ uiViewController: ScannerViewController, context: Context) {
+        uiViewController.subviewInitializer = self.subviewInitializer
         uiViewController.subviewUpdater = self.subviewUpdater
         context.coordinator.parent = self
         uiViewController.updateViewController(
@@ -116,6 +117,12 @@ public struct CodeScannerView: UIViewControllerRepresentable {
     public func subviewUpdater(_ updater: @escaping (UIView) -> Void) -> some View {
         var copy = self
         copy.subviewUpdater = updater
+        return copy
+    }
+
+    public func subviewInitializer(_ updater: @escaping (UIView) -> Void) -> some View {
+        var copy = self
+        copy.subviewInitializer = subviewInitializer
         return copy
     }
 }
